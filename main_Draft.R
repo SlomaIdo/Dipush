@@ -28,11 +28,11 @@ dipush.db <-
     rbindlist()
 
 # write POSIXct to 11/05/2024 08:54:30 PM
-meeting.participants$`Start time` <- 
-  as.POSIXct(meeting.participants$`Start time`, format = "%m/%d/%Y %I:%M:%S %p")
+dipush.db$`Start time` <- 
+  as.POSIXct(dipush.db$`Start time`, format = "%m/%d/%Y %I:%M:%S %p")
 
-meeting.participants$`End time` <- 
-  as.POSIXct(meeting.participants$`End time`, format = "%m/%d/%Y %I:%M:%S %p")
+dipush.db$`End time` <- 
+  as.POSIXct(dipush.db$`End time`, format = "%m/%d/%Y %I:%M:%S %p")
 
 dipush.db <- 
   dipush.db[order(`Start time`)]
@@ -54,7 +54,7 @@ ggplot2::ggplot(participants.freq.view, aes(x = N)) +
 
 # plot trend line of participants with fill points and filled area under the line
 p <- 
-ggplot2::ggplot(meeting.participants, aes(x = `Start time`, y = Participants)) +
+ggplot2::ggplot(dipush.db[`In waiting room` == 'No'], aes(x = `Start time`, y = Participants)) +
   ggplot2::geom_line(color = "navy") +
   ggplot2::geom_point(color = "navy", fill = "navy") +
   ggplot2::geom_area(fill = "navy", alpha = .4) +
@@ -76,7 +76,7 @@ freq.over.time <-
   part.dt[,.N,by = c("freq_till_now","Start time")][order(`Start time`)]
 # plot the cumsum of the participants
 freq.over.time$freq_till_now <- as.factor(freq.over.time$freq_till_now) 
-ggplot2::ggplot(freq.over.time,
+ggplot2::ggplot(freq.over.time[freq_till_now %in% c(2,3)],
                 aes(x = `Start time`,
                     y = N,
                     group =1,
